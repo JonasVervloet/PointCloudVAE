@@ -2,25 +2,34 @@ from torch_geometric.datasets.shapenet import ShapeNet
 
 from dataset.dataset_generator import DatasetGenerator
 
-PATH = "D:/Shapenet/"
-
 
 class ShapeNetGenerator(DatasetGenerator):
-    def __init__(self, batch_size, shuffle=True, category="Airplane"):
+    PATH = "D:/Documenten/Documenten Mie/jonas/ShapeNet/"
+
+    def __init__(self, batch_size, shuffle=True, categories="Airplane"):
         DatasetGenerator.__init__(self, batch_size, shuffle)
-        self.category = category
+        self.categories = categories
         self.train_size = None
         self.val_size = None
 
     def generate_train_dataset(self):
-        return ShapeNet(
-            root=PATH,
-            categories=self.category
+        train_set = ShapeNet(
+            ShapeNetGenerator.PATH,
+            categories=self.categories,
+            include_normals=False,
+            split='train'
         )
-
+        self.train_size = len(train_set)
+        return train_set
 
     def generate_validation_dataset(self):
-        print()
+        val_set = ShapeNet(
+            ShapeNetGenerator.PATH,
+            categories=self.categories,
+            include_normals='val'
+        )
+        self.val_size = len(val_set)
+        return val_set
 
     def get_train_size(self):
         return self.train_size
