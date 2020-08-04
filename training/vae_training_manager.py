@@ -2,14 +2,16 @@ import numpy as np
 from torch.optim import Adam
 
 from training.save_manager import SaveManager
-from loss.chamfer_distance import ChamferDistance
+from loss.chamfer_vae_loss import VAEChamferDistance
 
 
 class TrainingManager:
-    def __init__(self):
+    def __init__(self, alfa):
         self.network = None
         self.save_manager = None
         self.dataset_generator = None
+
+        self.alfa = alfa
 
     def set_map_path(self, map_path):
         self.save_manager = SaveManager(map_path)
@@ -43,7 +45,9 @@ class TrainingManager:
             lr=lr,
             weight_decay=weight_decay
         )
-        loss_fn = ChamferDistance()
+        loss_fn = VAEChamferDistance(
+            alfa=self.alfa
+        )
 
         print("training started")
         for i in range(end_epoch - start_epoch + 1):
