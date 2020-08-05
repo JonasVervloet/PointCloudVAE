@@ -4,6 +4,7 @@ import numpy as np
 
 
 def auto_encode_clouds(network, data_generator, save_manager, name=""):
+    mp.offline()
     train_loader, val_loader = data_generator.generate_loaders()
 
     i = 0
@@ -28,7 +29,7 @@ def auto_encode_clouds(network, data_generator, save_manager, name=""):
                     data=plot, s=[6*batch_size, 1, 6*j], shading={"point_size": 0.2}
                 )
             mp.subplot(
-                cloud_out, c=cloud_out[:, 1],
+                cloud_out, c=cloud_out[:, 0],
                 data=plot, s=[6*batch_size, 1, 6*j+1], shading={"point_size": 0.2}
             )
 
@@ -40,7 +41,7 @@ def auto_encode_clouds(network, data_generator, save_manager, name=""):
                 data=plot, s=[6 * batch_size, 1, 6 * j + 2], shading={"point_size": 0.2}
             )
             mp.subplot(
-                cloud_out, c=cloud_out[:, 1],
+                cloud_out, c=cloud_out[:, 0],
                 data=plot, s=[6 * batch_size, 1, 6 * j + 3], shading={"point_size": 0.2}
             )
 
@@ -52,7 +53,7 @@ def auto_encode_clouds(network, data_generator, save_manager, name=""):
                 data=plot, s=[6 * batch_size, 1, 6 * j + 4], shading={"point_size": 0.2}
             )
             mp.subplot(
-                cloud_out, c=cloud_out[:, 1],
+                cloud_out, c=cloud_out[:, 0],
                 data=plot, s=[6 * batch_size, 1, 6 * j + 5], shading={"point_size": 0.2}
             )
 
