@@ -69,3 +69,31 @@ class PointCloudVAE(nn.Module):
         output_batch_list = [out_dec_batch, middle_dec_batch, in_dec_batch]
 
         return input_points_list, input_batch_list, output_points_list, output_batch_list, mean, variance
+
+    def encoder(self, batch_obj):
+        out_enc_points, out_enc_features, out_enc_batch = self.outside_encoder(
+            batch_obj.pos, batch_obj.batch
+        )
+        middle_enc_points, middle_enc_features, middle_enc_batch = self.middle_encoder(
+            out_enc_points, out_enc_features, out_enc_batch
+        )
+        in_enc_features = self.inside_encoder(
+            middle_enc_points, middle_enc_features, middle_enc_batch
+        )
+
+        mean = self.enc_mu(in_enc_features)
+        variance = self.enc_var(in_enc_features)
+
+        return mean, variance
+
+    def decode(self, mean):
+        in_dec_points, in_dec_features, in_dec_batch = self.inside_decoder(mean)
+
+        middle_dec_points, middle_dec_features, middle_dec_batch = self.middle_decoder(
+            in_dec_points, in_dec_features, in_dec_batch
+        )
+        out_dec_points, out_dec_batch = self.outside_decoder(
+            middle_dec_points, middle_dec_features, middle_dec_batch
+        )
+
+        return out_dec_points, out_dec_batch
