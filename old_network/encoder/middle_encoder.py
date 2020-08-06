@@ -52,7 +52,7 @@ class MiddleEncoder(nn.Module):
         rel_encoded = self.neighborhood_enc(relative_points, radius_cluster)
         rel_enc_mapped = rel_encoded[radius_cluster]
 
-        fc_input = torch.cat([rel_enc_mapped, radius_features], dim=1)
+        fc_input = torch.cat([relative_points, rel_enc_mapped, radius_features], dim=1)
 
         fc1_features = F.relu(self.fc1(fc_input))
         fc2_features = F.relu(self.fc2(fc1_features))
