@@ -3,13 +3,13 @@ from torch.nn import functional as F
 import torch_geometric.nn as gnn
 
 
-class OutsideEncoder(nn.Module):
+class NeighborhoodEncoder(nn.Module):
     """
     This encoder takes in relative points and the cluster to which they belong and outputs
         a single feature vector for each cluster.
     """
     def __init__(self, nb_neighbors, features, features_global):
-        super(OutsideEncoder, self).__init__()
+        super(NeighborhoodEncoder, self).__init__()
 
         assert(len(features) == 3)
         assert(len(features_global) == 3)
