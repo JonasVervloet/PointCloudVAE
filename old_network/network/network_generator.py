@@ -60,7 +60,7 @@ class NetworkGenerator:
         inside_neigh_dec = NeighborhoodDecoder(
             nb_neighbors=self.nbs_neighbors[2],
             input_size=8,
-            features_global=[16, 32, 64 * self.nbs_neighbors[2]],
+            features_global=[16, 32, 64],
             features=[16, 8, 3]
         )
         inside_decoder = InsideDecoder(
@@ -75,7 +75,7 @@ class NetworkGenerator:
         middle_neigh_dec = NeighborhoodDecoder(
             nb_neighbors=self.nbs_neighbors[1],
             input_size=8,
-            features_global=[16, 32, 64 * self.nbs_neighbors[1]],
+            features_global=[16, 32, 64],
             features=[16, 8, 3]
         )
         middle_decoder = MiddleDecoder(
@@ -90,7 +90,7 @@ class NetworkGenerator:
         outside_neigh_dec = NeighborhoodDecoder(
             nb_neighbors=self.nbs_neighbors[0],
             input_size=8,
-            features_global=[16, 32, 64 * self.nbs_neighbors[0]],
+            features_global=[16, 32, 64],
             features=[16, 8, 3]
         )
         outside_decoder = OutsideDecoder(

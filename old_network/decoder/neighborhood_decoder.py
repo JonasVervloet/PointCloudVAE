@@ -15,7 +15,6 @@ class NeighborhoodDecoder(nn.Module):
 
         assert(len(features_global) == 3)
         assert(len(features) == 3)
-        assert(features_global[2] == features[0] * nb_neighbors)
 
         self.nb_neighbors = nb_neighbors
         self.input_size = input_size
@@ -23,7 +22,7 @@ class NeighborhoodDecoder(nn.Module):
 
         self.fc1_global = nn.Linear(input_size, features_global[0])
         self.fc2_global = nn.Linear(features_global[0], features_global[1])
-        self.fc3_global = nn.Linear(features_global[1], features_global[2])
+        self.fc3_global = nn.Linear(features_global[1], features[0]*self.nb_neighbors)
 
         self.fc1 = nn.Linear(features[0], features[1])
         self.fc2 = nn.Linear(features[1], features[2])
