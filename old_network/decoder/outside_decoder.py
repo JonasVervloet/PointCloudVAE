@@ -1,46 +1,22 @@
 import torch
 from torch import nn
-from torch.nn import functional as F
-import math
 
 
 class OutsideDecoder(nn.Module):
-    def __init__(self, nb_neighbors, radius, input_size,
-                 features_global, features):
+    def __init__(self, nb_neighbors, radius, neighborhood_decoder):
         super(OutsideDecoder, self).__init__()
-
-        assert(len(features_global) == 3)
-        assert(len(features) == 2)
 
         self.nb_neighbors = nb_neighbors
         self.radius = radius
-        self.input_size = input_size
 
-        self.fc1_global = nn.Linear(input_size, features_global[0])
-        self.fc2_global = nn.Linear(features_global[0], features_global[1])
-        self.fc3_global = nn.Linear(features_global[1], features_global[2])
-
-        self.fc1 = nn.Linear(features_global[2] + 2, features[0])
-        self.fc2 = nn.Linear(features[0], features[1])
-        self.fc3_point = nn.Linear(features[1], 3)
+        self.neighborhood_decoder = neighborhood_decoder
 
     def forward(self, points, features, batch):
-        fc1_global_features = F.relu(self.fc1_global(features))
-        fc2_global_features = F.relu(self.fc2_global(fc1_global_features))
-        fc3_global_features = F.relu(self.fc3_global(fc2_global_features))
-
-        resized = fc3_global_features.view(features.size(0)*self.nb_neighbors, -1)
-
-        fc1_features = F.relu(self.fc1(resized))
-        fc2_features = F.relu(self.fc2(fc1_features))
-        fc3_points = torch.tanh(self.fc3_point(fc2_features))
+        relative_points, output_batch = self.neighborhood_decoder(features, batch)
 
         anchor_points = torch.repeat_interleave(
             points, self.nb_neighbors, dim=0
         )
-        output_batch = torch.repeat_interleave(
-            batch, self.nb_neighbors, dim=0
-        )
-        output_points = anchor_points + (fc3_points * self.radius)
+        output_points = anchor_points + (relative_points * self.radius)
 
         return output_points, output_batch
