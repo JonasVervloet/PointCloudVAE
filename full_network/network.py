@@ -1,27 +1,12 @@
 from torch import nn
 
-from standard_network.encoder.middle_encoder import MiddleEncoder
-from standard_network.encoder.outside_encoder import OutsideEncoder
-from standard_network.encoder.inside_encoder import InsideEncoder
-
-from standard_network.decoder.middle_decoder import MiddleDecoder
-from standard_network.decoder.outside_decoder import OutsideDecoder
-from standard_network.decoder.inside_decoder import InsideDecoder
-
 
 class PointCloudAE(nn.Module):
     def __init__(self, encoders, decoders):
         super(PointCloudAE, self).__init__()
 
         assert(len(encoders) == 3)
-        assert(isinstance(encoders[0], OutsideEncoder))
-        assert(isinstance(encoders[1], MiddleEncoder))
-        assert(isinstance(encoders[2], InsideEncoder))
-
         assert(len(decoders) == 3)
-        assert(isinstance(decoders[0], InsideDecoder))
-        assert(isinstance(decoders[1], MiddleDecoder))
-        assert(isinstance(decoders[2], OutsideDecoder))
 
         self.outside_encoder = encoders[0]
         self.middle_encoder = encoders[1]

@@ -6,7 +6,7 @@ from standard_network.decoder.middle_decoder import MiddleDecoder
 from standard_network.decoder.outside_decoder import OutsideDecoder
 from standard_network.decoder.inside_decoder import InsideDecoder
 
-from standard_network.network.vae_network import PointCloudVAE
+from full_network.vae_network import PointCloudVAE
 
 
 class NetworkGenerator:
