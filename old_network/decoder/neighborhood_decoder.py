@@ -22,11 +22,11 @@ class NeighborhoodDecoder(nn.Module):
 
         self.fc1_global = nn.Linear(input_size, features_global[0])
         self.fc2_global = nn.Linear(features_global[0], features_global[1])
-        self.fc3_global = nn.Linear(features_global[1], features[0]*self.nb_neighbors)
+        self.fc3_global = nn.Linear(features_global[1], features_global[2]*self.nb_neighbors)
 
-        self.fc1 = nn.Linear(features[0], features[1])
-        self.fc2 = nn.Linear(features[1], features[2])
-        self.fc3_point = nn.Linear(features[2], 3)
+        self.fc1 = nn.Linear(features_global[2], features[0])
+        self.fc2 = nn.Linear(features[0], features[1])
+        self.fc3_point = nn.Linear(features[1], features[2])
 
     def forward(self, features, batch):
         fc1_global_features = F.relu(self.fc1_global(features))
