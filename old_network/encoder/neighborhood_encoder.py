@@ -8,13 +8,11 @@ class NeighborhoodEncoder(nn.Module):
     This encoder takes in relative points and the cluster to which they belong and outputs
         a single feature vector for each cluster.
     """
-    def __init__(self, nb_neighbors, features, features_global):
+    def __init__(self, features, features_global):
         super(NeighborhoodEncoder, self).__init__()
 
         assert(len(features) == 3)
         assert(len(features_global) == 3)
-
-        self.nb_neighbors = nb_neighbors
 
         self.fc1 = nn.Linear(3, features[0])
         self.fc2 = nn.Linear(features[0], features[1])
