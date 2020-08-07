@@ -18,7 +18,7 @@ class NeighborhoodDecoder(nn.Module):
 
         self.nb_neighbors = nb_neighbors
         self.input_size = input_size
-        self.latent_feature = features[0]
+        self.latent_feature = features_global[2]
 
         self.fc1_global = nn.Linear(input_size, features_global[0])
         self.fc2_global = nn.Linear(features_global[0], features_global[1])
