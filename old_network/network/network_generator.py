@@ -69,7 +69,7 @@ class NetworkGenerator:
             split=8,
             feature_size=32,
             neighborhood_decoder=inside_neigh_dec,
-            features=[64, 32, 16]
+            features=[64, 32, 24]
         )
 
         middle_neigh_dec = NeighborhoodDecoder(
