@@ -67,4 +67,6 @@ class MiddleEncoder(nn.Module):
         fc2_global_features = F.relu(self.fc2_global(fc1_global_features))
         fc3_global_features = F.relu(self.fc3_global(fc2_global_features))
 
-        return fps_points, fc3_global_features, fps_batch
+        output_features = torch.cat([rel_encoded, fc3_global_features], dim=1)
+
+        return fps_points, output_features, fps_batch

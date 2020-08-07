@@ -45,4 +45,6 @@ class InsideEncoder(nn.Module):
         fc2_global_features = F.relu(self.fc2_global(fc1_global_features))
         fc3_global_features = F.relu(self.fc3_global(fc2_global_features))
 
-        return fc3_global_features
+        output_features = torch.cat([rel_encoded, fc3_global_features], dim=1)
+
+        return output_features
