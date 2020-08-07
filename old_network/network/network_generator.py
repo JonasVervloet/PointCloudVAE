@@ -37,9 +37,9 @@ class NetworkGenerator:
         middle_encoder = MiddleEncoder(
             nb_neighbors=self.nbs_neighbors[1],
             radius=self.radii[1],
-            input_size=16+3,
+            input_size=8+8+3,
             neighborhood_encoder=middle_neigh_enc,
-            features=[16, 32, 128],
+            features=[32, 64, 128],
             features_global=[64, 32, 16]
         )
 
@@ -49,9 +49,9 @@ class NetworkGenerator:
         )
         inside_encoder = InsideEncoder(
             radius=self.radii[2],
-            input_size=24+3,
+            input_size=24+8+3,
             neighborhood_encoder=inside_neigh_enc,
-            features=[32, 64, 256],
+            features=[64, 128, 256],
             features_global=[128, 64, 32]
         )
 
@@ -67,7 +67,7 @@ class NetworkGenerator:
             nb_neighbors=self.nbs_neighbors[2],
             radius=self.radii[2],
             split=8,
-            feature_size=24,
+            feature_size=32,
             neighborhood_decoder=inside_neigh_dec,
             features=[64, 32, 16]
         )
@@ -82,7 +82,7 @@ class NetworkGenerator:
             nb_neighbors=self.nbs_neighbors[1],
             radius=self.radii[1],
             split=8,
-            feature_size=8,
+            feature_size=16,
             neighborhood_decoder=middle_neigh_dec,
             features=[32, 16, 8]
         )
