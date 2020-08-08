@@ -70,3 +70,58 @@ class MiddleEncoder(nn.Module):
         output_features = torch.cat([rel_encoded, fc3_global_features], dim=1)
 
         return fps_points, output_features, fps_batch
+
+
+class OldMiddleEncoder(nn.Module):
+    def __init__(self, nb_neighbors, radius, input_size, feature, neighborhood_encoder):
+        super(OldMiddleEncoder, self).__init__()
+
+        self.nb_neighbors = nb_neighbors
+        self.radius = radius
+        self.input_size = input_size
+
+        self.neighborhood_enc = neighborhood_encoder
+
+        self.fc1 = nn.Linear(input_size, feature)
+        self.fc1_global = nn.Linear(feature, feature)
+
+    def forward(self, points, features, batch):
+        ratio = 1/self.nb_neighbors
+        fps_indices = gnn.fps(
+            x=points,
+            batch=batch,
+            ratio=ratio
+        )
+        fps_points = points[fps_indices]
+        fps_batch = batch[fps_indices]
+
+        radius_cluster, radius_indices = gnn.radius(
+            x=points,
+            y=fps_points,
+            batch_x=batch,
+            batch_y=fps_batch,
+            r=self.radius
+        )
+
+        anchor_points = fps_points[radius_cluster]
+        radius_points = points[radius_indices]
+        radius_features = features[radius_indices]
+
+        relative_points = (radius_points - anchor_points) / self.radius
+        rel_encoded = self.neighborhood_enc(relative_points, radius_cluster)
+        rel_enc_mapped = rel_encoded[radius_cluster]
+
+        fc_input = torch.cat([relative_points, rel_enc_mapped, radius_features], dim=1)
+
+        fc1_features = F.relu(self.fc1(fc_input))
+
+        max_features = gnn.global_max_pool(
+            x=fc1_features,
+            batch=radius_cluster
+        )
+
+        fc1_global_features = F.relu(self.fc1_global(max_features))
+
+        output_features = torch.cat([rel_encoded, fc1_global_features], dim=1)
+
+        return fps_points, output_features, fps_batch

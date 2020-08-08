@@ -48,3 +48,36 @@ class InsideEncoder(nn.Module):
         output_features = torch.cat([rel_encoded, fc3_global_features], dim=1)
 
         return output_features
+
+
+class OldInsideEncoder(nn.Module):
+    def __init__(self, radius, input_size, feature, neighborhood_encoder):
+        super(OldInsideEncoder, self).__init__()
+
+        self.radius = radius
+        self.input_size = input_size
+
+        self.neighborhood_enc = neighborhood_encoder
+
+        self.fc1 = nn.Linear(input_size, feature)
+        self.fc1_global = nn.Linear(feature, feature)
+
+    def forward(self, points, features, batch):
+        relative_points = points / self.radius
+        rel_encoded = self.neighborhood_enc(relative_points, batch)
+        rel_enc_mapped = rel_encoded[batch]
+
+        fc_input = torch.cat([relative_points, rel_enc_mapped, features], dim=1)
+
+        fc1_features = F.relu(self.fc1(fc_input))
+
+        max_features = gnn.global_max_pool(
+            x=fc1_features,
+            batch=batch
+        )
+
+        fc1_global_features = F.relu(self.fc1_global(max_features))
+
+        output_features = torch.cat([rel_encoded, fc1_global_features], dim=1)
+
+        return output_features

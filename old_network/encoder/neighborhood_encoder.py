@@ -38,3 +38,33 @@ class NeighborhoodEncoder(nn.Module):
         fc3_global_features = F.relu(self.fc3_global(fc2_global_features))
 
         return fc3_global_features
+
+
+class OldNeighborhoodEncoder(nn.Module):
+    """
+    This encoder takes in relative points and the cluster to which they belong and outputs
+        a single feature vector for each cluster.
+    """
+    def __init__(self, feature, features_global):
+        super(OldNeighborhoodEncoder, self).__init__()
+
+        assert(len(features_global) == 2)
+
+        self.fc1 = nn.Linear(3, feature)
+
+        self.fc1_global = nn.Linear(feature, features_global[0])
+        self.fc2_global = nn.Linear(features_global[0], features_global[1])
+
+    def forward(self, relative_points, cluster):
+
+        fc1_features = F.relu(self.fc1(relative_points))
+
+        max_features = gnn.global_max_pool(
+            x=fc1_features,
+            batch=cluster
+        )
+
+        fc1_global_features = F.relu(self.fc1_global(max_features))
+        fc2_global_features = F.relu(self.fc2_global(fc1_global_features))
+
+        return fc2_global_features
