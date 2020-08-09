@@ -22,7 +22,7 @@ class TrainingManager:
     def set_dataset_generator(self, generator):
         self.dataset_generator = generator
 
-    def train(self, end_epoch, lr, weight_decay, start_epoch=0):
+    def train(self, end_epoch, lr, weight_decay, start_epoch=0, device='cpu'):
         assert(end_epoch % 5 == 0)
         assert (start_epoch % 5 == 0)
 
@@ -61,6 +61,7 @@ class TrainingManager:
             self.network.train()
             temp_loss = []
             for batch in train_loader:
+                batch.to(device)
                 optimizer.zero_grad()
                 in_points_list, in_batch_list, out_points_list, out_batch_list, mean, log_variance = self.network(batch)
                 loss = loss_fn(in_points_list, in_batch_list, out_points_list, out_batch_list, mean, log_variance)
@@ -76,6 +77,7 @@ class TrainingManager:
             self.network.eval()
             temp_loss = []
             for batch in val_loader:
+                batch.to(device)
                 in_points_list, in_batch_list, out_points_list, out_batch_list, mean, log_variance = self.network(batch)
                 loss = loss_fn(in_points_list, in_batch_list, out_points_list, out_batch_list, mean, log_variance)
                 temp_loss.append(loss.item())
