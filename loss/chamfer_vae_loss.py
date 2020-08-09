@@ -9,7 +9,7 @@ class VAEChamferDistance(nn.Module):
         self.alfa = alfa
 
     def forward(self, in_points_list, in_batch_list, out_points_list, out_batch_list,
-                mean, variance):
+                mean, log_variance):
         assert(in_batch_list is not None)
         assert(out_batch_list is not None)
         assert(torch.max(in_batch_list[0]) == torch.max(out_batch_list[0]))
@@ -28,7 +28,7 @@ class VAEChamferDistance(nn.Module):
                 output_points[output_batch == i]
             )
 
-        kl_loss = self.get_kl_divergence(mean, variance)
+        kl_loss = self.get_kl_divergence(mean, log_variance)
 
         return chamfer_loss + self.alfa * kl_loss
 
@@ -57,5 +57,5 @@ class VAEChamferDistance(nn.Module):
         return torch.stack(distances)
 
     @staticmethod
-    def get_kl_divergence(mean, variance):
-        return 0.5 * torch.sum(torch.exp(variance) + mean**2 - variance)
+    def get_kl_divergence(mean, log_variance):
+        return 0.5 * torch.sum(torch.exp(log_variance) + mean ** 2 - 1.0 - log_variance)

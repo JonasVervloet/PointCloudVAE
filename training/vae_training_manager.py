@@ -62,8 +62,8 @@ class TrainingManager:
             temp_loss = []
             for batch in train_loader:
                 optimizer.zero_grad()
-                in_points_list, in_batch_list, out_points_list, out_batch_list, mean, variance = self.network(batch)
-                loss = loss_fn(in_points_list, in_batch_list, out_points_list, out_batch_list, mean, variance)
+                in_points_list, in_batch_list, out_points_list, out_batch_list, mean, log_variance = self.network(batch)
+                loss = loss_fn(in_points_list, in_batch_list, out_points_list, out_batch_list, mean, log_variance)
                 loss.backward()
                 optimizer.step()
                 temp_loss.append(loss.item())
@@ -76,8 +76,8 @@ class TrainingManager:
             self.network.eval()
             temp_loss = []
             for batch in val_loader:
-                in_points_list, in_batch_list, out_points_list, out_batch_list, mean, variance = self.network(batch)
-                loss = loss_fn(in_points_list, in_batch_list, out_points_list, out_batch_list, mean, variance)
+                in_points_list, in_batch_list, out_points_list, out_batch_list, mean, log_variance = self.network(batch)
+                loss = loss_fn(in_points_list, in_batch_list, out_points_list, out_batch_list, mean, log_variance)
                 temp_loss.append(loss.item())
 
             val_loss = sum(temp_loss) / val_size
