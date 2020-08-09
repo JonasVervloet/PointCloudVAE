@@ -1,4 +1,6 @@
+import torch
 from torch_geometric.datasets.shapenet import ShapeNet
+from torch_geometric.transforms import LinearTransformation
 
 from dataset.dataset_generator import DatasetGenerator
 
@@ -17,7 +19,14 @@ class ShapeNetGenerator(DatasetGenerator):
             ShapeNetGenerator.PATH,
             categories=self.categories,
             include_normals=False,
-            split='train'
+            split='train',
+            transform=LinearTransformation(
+                torch.tensor([
+                    [2.0, 0, 0],
+                    [0, 2.0, 0],
+                    [0, 0, 2.0]
+                ])
+            )
         )
         self.train_size = len(train_set)
         return train_set
@@ -26,7 +35,15 @@ class ShapeNetGenerator(DatasetGenerator):
         val_set = ShapeNet(
             ShapeNetGenerator.PATH,
             categories=self.categories,
-            include_normals='val'
+            include_normals=False,
+            split='val',
+            transform=LinearTransformation(
+                torch.tensor([
+                    [2.0, 0, 0],
+                    [0, 2.0, 0],
+                    [0, 0, 2.0]
+                ])
+            )
         )
         self.val_size = len(val_set)
         return val_set
