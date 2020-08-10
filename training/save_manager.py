@@ -38,9 +38,10 @@ class SaveManager:
             self.path + "loss_epoch{}.png".format(epoch_nb)
         )
 
-    def load_network(self, network, epoch_nb):
+    def load_network(self, network, epoch_nb, device='cpu'):
         network.load_state_dict(
-            torch.load(self.path + "model_epoch{}.pt".format(epoch_nb))
+            torch.load(self.path + "model_epoch{}.pt".format(epoch_nb),
+                       map_location=device)
         )
 
     def load_losses(self, epoch_nb,  train=True):
