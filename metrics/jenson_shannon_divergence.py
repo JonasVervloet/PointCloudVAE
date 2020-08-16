@@ -35,6 +35,8 @@ def occupancy_grid(pclouds, grid_resolution, in_sphere=False):
     min_value = abs(min([np.min(cloud) for cloud in pclouds]))
     if not in_sphere and max_value > bound or min_value > bound:
         warnings.warn('Point-clouds are not in unit cube.')
+        print(max_value)
+        print(min_value)
 
     max_value_sphere = max([np.max(np.sqrt(np.sum(cloud**2, axis=1))) for cloud in pclouds])
     if in_sphere and max_value_sphere > bound:

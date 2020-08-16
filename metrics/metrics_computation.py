@@ -7,10 +7,7 @@ from metrics.minimum_matching_distance import mmd_fn
 from metrics.knn_1 import knn_1_fn
 
 
-def compute_metrics(ref_points, ref_batch, gen_points, gen_batch,
-                    jsd_resolution=28, in_unit_sphere=False):
-    ref_clouds = transform_batch_to_list(ref_points, ref_batch)
-    gen_clouds = transform_batch_to_list(gen_points, gen_batch)
+def compute_metrics(ref_clouds, gen_clouds, jsd_resolution=28, in_unit_sphere=False):
 
     jsd_score = jsd_between_point_cloud_sets(
         ref_clouds,
@@ -42,3 +39,36 @@ def transform_batch_to_list(points, batch):
         )
 
     return clouds
+
+
+def compute_metric_scores(test_loader, latent_size, network):
+    reference_clouds = []
+    for batch in test_loader:
+        reference_clouds += transform_batch_to_list(batch.pos, batch.batch)
+
+    lat_vecs = []
+    for cloud in reference_clouds:
+        lat_vecs.append(
+            sample_latent_space(latent_size)
+        )
+    latent_batch = torch.stack(lat_vecs)
+
+    out_points_list, out_batch_list = network.decode(latent_batch)
+    generated_clouds = transform_batch_to_list(out_points_list[0], out_batch_list[0])
+
+    print(len(reference_clouds))
+    print(reference_clouds[0].size())
+
+    print(len(generated_clouds))
+    print(generated_clouds[0].size())
+
+    compute_metrics(reference_clouds, generated_clouds)
+
+
+def sample_latent_space(latent_size):
+    mean = torch.zeros(latent_size)
+    variance = torch.ones(latent_size)
+
+    eps = torch.rand_like(variance)
+
+    return eps.mul(variance).add(mean)
