@@ -41,7 +41,7 @@ def transform_batch_to_list(points, batch):
     return clouds
 
 
-def compute_metric_scores(test_loader, latent_size, network):
+def compute_metric_scores(test_loader, latent_size, network, device='cpu'):
     reference_clouds = []
     for batch in test_loader:
         reference_clouds += transform_batch_to_list(batch.pos, batch.batch)
@@ -51,7 +51,7 @@ def compute_metric_scores(test_loader, latent_size, network):
         lat_vecs.append(
             sample_latent_space(latent_size)
         )
-    latent_batch = torch.stack(lat_vecs)
+    latent_batch = torch.stack(lat_vecs).to(device=device)
 
     out_points_list, out_batch_list = network.decode(latent_batch)
     generated_clouds = transform_batch_to_list(out_points_list[0], out_batch_list[0])
